@@ -1,6 +1,7 @@
 const apiAdress = "http://localhost:3001/todo";
 
 const todoService = {
+    //Hämtar alla todos
     getAll: async () => {
         const response = await fetch(apiAdress);
         if (response.ok) {
@@ -12,7 +13,7 @@ const todoService = {
             statusText: response.statusText
         });
     },
-
+    //Skapar ny todo
     createTodo: async (newTodo) => {
         const response = await fetch(apiAdress, {
             method: "POST", headers: {
@@ -29,7 +30,7 @@ const todoService = {
             statusText: response.statusText
         });
     },
-
+    //Updaterar Todo
     updateTodo: async (id, updateTodo) => {
         const response = await fetch(`${apiAdress}/${id}`, {
             method: "PUT", headers: {
@@ -46,7 +47,7 @@ const todoService = {
             statusText: response.statusText
         });
     },
-
+    //Raderar todo
     deleteTodo: async (id) => {
         const response = await fetch(`${apiAdress}/${id}`, { method: "DELETE" });
         if (response.ok) {

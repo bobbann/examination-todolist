@@ -7,6 +7,7 @@ const EditTodoForm = (props) => {
     const [description, setDescription] = useState(todo.description);
     const isValid = title !== "" && description !== "";
 
+    //Uppdaterar befintlig person och sparar
     const handleSave = async () => {
         if (isValid && onSave) {
             const updatedTodoInfo = {

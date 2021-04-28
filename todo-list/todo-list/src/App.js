@@ -18,10 +18,13 @@ function App() {
   const [selectedTodo, setSelectedTodo] = useState();
   const [viewMode, setViewMode] = useState(viewModes.create);
 
+  //Visar CreateTodoForm
   const showCreateForm = () => {
     setSelectedTodo(null);
     setViewMode(viewModes.create);
   }
+
+  //Markerar todo och visar detaljvyn
   const selectTodo = (todo) => {
     setSelectedTodo(todo);
     setViewMode(viewModes.view);
@@ -34,6 +37,7 @@ function App() {
     selectTodo(newTodo);
   }
 
+  //Skapar en kopia av arrayen och loopar igenom tills det kommer till objektet som ska uppdateras
   const handleTodoUpdate = (updatedTodo) => {
     const newArray = todo.slice();
     for(var i = 0; i < newArray.length; i++){
@@ -56,6 +60,7 @@ function App() {
     showCreateForm();
   }
 
+  //Hämtar alla todos
   const getTodos = async () => {
     const todos = await todoService.getAll();
     setTodo(todos);
@@ -65,6 +70,7 @@ function App() {
     getTodos();
   }, []);
 
+  //Rendrerar de olika sektionerna i applikationen
   const renderMainSection = () => {
     if(!selectedTodo || viewMode === viewModes.create){
       return <CreateTodoForm onCancel={() => setViewMode(viewModes.view)} onSave={handleTodoSave}/>
@@ -79,6 +85,7 @@ function App() {
     }
   };
 
+  //Todolistan till vänster
   return (
     <main>
       <aside>

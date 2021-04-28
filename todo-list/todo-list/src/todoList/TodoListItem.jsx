@@ -32,7 +32,7 @@ import React from "react";
 const TodoListItem = (props) => {
     const { todo, isSelected, onClick} = props;
     let className = "todo-list-item";
-    if (isSelected) {
+    if (isSelected) { 
         className += " todo-list-item--selected";
     }
     const handleClick = () => {
