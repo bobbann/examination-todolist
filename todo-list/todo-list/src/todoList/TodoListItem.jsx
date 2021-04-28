@@ -44,7 +44,7 @@ const TodoListItem = (props) => {
     return (
         /* Todo-objekt */
         <li className={className} onClick={handleClick}>
-            <span className="todo-list-item__checkbox"></span>
+            <input type="checkbox" className="todo-list-item__checkbox"/>
             <div className="todo-list-item__info">
                 <h3>{todo.title}</h3>
                 <p>{todo.description}</p>

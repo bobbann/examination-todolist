@@ -37,7 +37,7 @@ function App() {
   const handleTodoUpdate = (updatedTodo) => {
     const newArray = todo.slice();
     for(var i = 0; i < newArray.length; i++){
-      if(newArray[i].id == updatedTodo.id){
+      if(newArray[i].id === updatedTodo.id){
         newArray[i] = updatedTodo;
         break;
       }
