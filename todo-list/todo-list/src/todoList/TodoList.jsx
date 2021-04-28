@@ -2,7 +2,7 @@ import React from "react";
 import TodoListItem from "./TodoListItem";
 
 const TodoList = (props) => {
-  const { todo, selectedTodoId } = props;
+  const { todo, selectedTodo } = props;
   
   const handleTodoClicked = (todo) => {
     if (props.onTodoSelected) {
@@ -16,7 +16,7 @@ const TodoList = (props) => {
         onClick={handleTodoClicked} 
         key={todo.id} 
         todo={todo} 
-        isSelected={todo.id === selectedTodoId} 
+        isSelected={todo === selectedTodo} 
         />
         ))}
     </ul>

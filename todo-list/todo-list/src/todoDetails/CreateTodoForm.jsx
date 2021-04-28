@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import todoService from "../api/todoService";
 
 
 
@@ -10,20 +11,16 @@ const CreateTodoForm = (props) => {
 
     /* Disabla save knapp om title eller description inte är ifyllt */
     const isValid = title !== "" && description !== "";
-    
+
     /* Sätter upp en ny person o skickar uppåt */
-    const handleSave = () => {
-        if(isValid && props.onSave){
+    const handleSave = async () => {
+        if (isValid && props.onSave) {
             const newTodo = {
-                id: Date.now().toString(),
                 title: title,
                 description: description,
-                completed: Boolean(),
-                created: Date.now()
             };
-            onSave(newTodo);
-            setTitle("");
-            setDescription("");
+            const createdTodo = await todoService.createTodo(newTodo);
+            onSave(createdTodo);
         }
     };
 

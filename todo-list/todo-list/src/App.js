@@ -4,7 +4,8 @@ import TodoList from './todoList/TodoList';
 import TodoDetails from './todoDetails/TodoDetails';
 import CreateTodoForm from './todoDetails/CreateTodoForm';
 import EditTodoForm from './todoDetails/EditTodoForm';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import todoService  from "./api/todoService";
 
 const viewModes = {
   view: "view",
@@ -13,31 +14,14 @@ const viewModes = {
 };
 
 function App() {
-  const [todo, setTodo] = useState([
-    {
-      "id": "55edb8d2-9000-4d64-bcb7-3bd81bcc06a0",
-      "title": "Do something",
-      "description": "This is the description",
-      "completed": false,
-      "created": 1618488094380
-    },
-    {
-      "id": "41b52cbe-2f08-4b89-9b9f-5d36189b4abf",
-      "title": "Buy groceries",
-      "description": "Eggs, ham, bacon",
-      "completed": false,
-      "created": 1618488116543
-    },
-    {
-      "id": "48c4ad89-0697-40b3-87c5-f3955490ed49",
-      "title": "Learn JavaScript",
-      "completed": false,
-      "created": 1618488129238
-    },
-  ]);
-  const [selectedTodo, setSelectedTodo] = useState(todo[0]);
-  const [viewMode, setViewMode] = useState(viewModes.view);
+  const [todo, setTodo] = useState([]);
+  const [selectedTodo, setSelectedTodo] = useState();
+  const [viewMode, setViewMode] = useState(viewModes.create);
 
+  const showCreateForm = () => {
+    setSelectedTodo(null);
+    setViewMode(viewModes.create);
+  }
   const selectTodo = (todo) => {
     setSelectedTodo(todo);
     setViewMode(viewModes.view);
@@ -47,19 +31,51 @@ function App() {
     /* Skapa kopia av todo array + lägga till ny todo*/
     const newArray = [...todo, newTodo];
     setTodo(newArray);
-    selectTodo(newTodo)
+    selectTodo(newTodo);
   }
 
+  const handleTodoUpdate = (updatedTodo) => {
+    const newArray = todo.slice();
+    for(var i = 0; i < newArray.length; i++){
+      if(newArray[i].id == updatedTodo.id){
+        newArray[i] = updatedTodo;
+        break;
+      }
+    }
+    setTodo(newArray);
+    selectTodo(updatedTodo);
+  }
+
+  const handleTodoDeleted = (deletedTodo) => {
+    // Mindre api anrop
+    setTodo(todo.filter(todo => todo.id !== deletedTodo.id));
+    
+    // Mer api anrop
+    //getTodos();
+
+    showCreateForm();
+  }
+
+  const getTodos = async () => {
+    const todos = await todoService.getAll();
+    setTodo(todos);
+  }
+
+  useEffect( () => {
+    getTodos();
+  }, []);
+
   const renderMainSection = () => {
+    if(!selectedTodo || viewMode === viewModes.create){
+      return <CreateTodoForm onCancel={() => setViewMode(viewModes.view)} onSave={handleTodoSave}/>
+    };
     switch (viewMode) {
       case viewModes.view:
-        return <TodoDetails todo={selectedTodo} onEdit={() => setViewMode(viewModes.edit)} />;
+        return <TodoDetails todo={selectedTodo} onEdit={() => setViewMode(viewModes.edit)} onDelete={handleTodoDeleted}/>;
       case viewModes.edit:
-        return <EditTodoForm todo={selectedTodo} onCancel={() => setViewMode(viewModes.view)} onSave={() => setViewMode(viewModes.view)} />;
-      case viewModes.create:
-        return <CreateTodoForm onCancel={() => setViewMode(viewModes.view)} onSave={handleTodoSave}/>;
-      default:
-        return null;
+        return <EditTodoForm todo={selectedTodo} onCancel={() => setViewMode(viewModes.view)} onSave={handleTodoUpdate} />
+        default:
+          return null;
     }
   };
 
@@ -67,11 +83,11 @@ function App() {
     <main>
       <aside>
         <h1 className="list-title">
-          My Todos <button id="button-add-todo" className="primary" onClick={() => setViewMode(viewModes.create)}>
+          My Todos <button id="button-add-todo" className="primary" onClick={showCreateForm}>
             Add
             </button>
         </h1>
-        <TodoList todo={todo} selectedTodoId={selectedTodo.id} onTodoSelected={selectTodo} />
+        <TodoList todo={todo} selectedTodo={selectedTodo} onTodoSelected={selectTodo} />
       </aside>
       <section>
         {renderMainSection()}
